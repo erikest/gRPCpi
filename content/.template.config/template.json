@@ -1,0 +1,20 @@
+{
+  "author": "Jeremy Lindsay <https://jeremylindsayni.wordpress.com>",
+  "classifications": [ "IoT", "Console" ], 
+  "name": "Empty .NET Core IoT project",
+  "identity": "IoT.Core",
+  "shortName": "coreiot",
+  "tags": {
+    "language": "C#"
+  },
+  "sourceName": "coreiot",
+  "symbols": {
+    "runtime": {
+      "type": "parameter",
+      "datatype": "string",
+      "replaces": "RUNTIME-FRAMEWORK-VERSION",
+      "defaultValue": "3.0.100-preview3-010431",
+      "description": "The .NET Core runtime framework to use."
+    }
+  }
+}

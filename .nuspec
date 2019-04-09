@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+    <metadata>
+        <!-- The identifier that must be unique within the hosting gallery -->
+        <id>grpcpi</id>
+
+        <!-- The package version number that is used when resolving dependencies -->
+        <version>1.0.0</version>
+
+        <!-- Authors contain text that appears directly on the gallery -->
+        <authors>Erik Taylor</authors>
+
+        <owners>Erik Taylor</owners>
+        
+         <!-- Project URL provides a link for the gallery -->
+        <projectUrl>http://github.com/erikest/grpcpi</projectUrl>
+
+         <!-- License information is displayed on the gallery -->
+        <license type="expression">Apache-2.0</license>
+        
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+
+        <!-- Any details about this particular release -->
+        <releaseNotes>first release</releaseNotes>
+
+        <description>gRPC Template configured for a RaspberryPi Client.  Includes a nuget reference to ARM7 compiled native library (libgrpc_csharp_ext) necessary for gRPC to work on the pi, and quick scripts for publishing and deploying to your pi.  It demonstrates both client/server communication and gpio on a pi client based on the response from the server</description>
+
+        <!-- Copyright information -->
+        <copyright>Copyright ©2019 Erikest</copyright>
+
+        <!-- Tags appear in the gallery and can be used for tag searches -->
+        <tags>dotnet core arm grpc raspberrypi</tags>
+		
+		<packageTypes>
+			<packageType name="Template" />
+		</packageTypes>
+    </metadata>
+</package>

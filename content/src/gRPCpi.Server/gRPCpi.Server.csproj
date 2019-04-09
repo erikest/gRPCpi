@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\Protos\*.proto" GrpcServices="Server" />
+    <Content Include="@(Protobuf)" LinkBase="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="nuget.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="0.1.19-pre1" />
+    <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+
+    <PackageReference Include="Grpc.Tools" Version="1.19.0" PrivateAssets="All" />
+
+    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.6" />
+  </ItemGroup>
+
+</Project>
