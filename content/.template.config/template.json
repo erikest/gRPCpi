@@ -1,19 +1,19 @@
 {
-  "author": "Jeremy Lindsay <https://jeremylindsayni.wordpress.com>",
-  "classifications": [ "IoT", "Console" ], 
-  "name": "Empty .NET Core IoT project",
-  "identity": "IoT.Core",
-  "shortName": "coreiot",
+  "author": "Erik Taylor <https://dev.to/erikest>",
+  "classifications": [ "gRPC", "RaspberryPi" ], 
+  "name": "Basic .net core gRPC client / server ready for Raspberry Pi",
+  "identity": "gRPCPi",
+  "shortName": "gRPCPi",
   "tags": {
     "language": "C#"
   },
-  "sourceName": "coreiot",
+  "sourceName": "grpcpi",
   "symbols": {
     "runtime": {
       "type": "parameter",
       "datatype": "string",
       "replaces": "RUNTIME-FRAMEWORK-VERSION",
-      "defaultValue": "3.0.100-preview3-010431",
+      "defaultValue": "3.1",
       "description": "The .NET Core runtime framework to use."
     }
   }

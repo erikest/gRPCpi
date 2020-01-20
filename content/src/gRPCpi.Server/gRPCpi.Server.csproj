@@ -19,7 +19,7 @@
 
     <PackageReference Include="Grpc.Tools" Version="2.26.0" PrivateAssets="All" />
 
-    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.9" />
+    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
