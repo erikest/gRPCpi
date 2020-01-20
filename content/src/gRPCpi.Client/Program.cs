@@ -36,12 +36,12 @@ namespace gRPCpi
             Console.ReadKey();
         }
 
-        static IGpioController GetController()
+        static System.Device.Gpio.GpioController GetController()
         {
             if (RuntimeInformation.OSArchitecture == Architecture.Arm) //Assume we're on the pi
                 return new GpioController(PinNumberingScheme.Board);
             else
-                return new ConsoleGPIOController();
+                return new GpioController(PinNumberingScheme.Board, new ConsoleGPIODriver());
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace gRPCpi
         /// <param name="reply"></param>
         private static void PulseReply(HelloReply reply)
         {
-            using (IGpioController controller = GetController())
+            using (GpioController controller = GetController())
             {
                 var onTime = 100;
                 var offTime = 50;
@@ -84,18 +84,21 @@ namespace gRPCpi
         }
     }
 
-    public class ConsoleGPIOController : IGpioController
+    public class ConsoleGPIODriver : GpioDriver
     {
 
-        List<(int pinNumber, PinValue value, PinMode mode)> pins = new List<(int pinNumber, PinValue value, PinMode mode)>();
+        List<ConsolePin> pins = new List<ConsolePin>();
         public bool ConsoleOut { get; set; }
-        public ConsoleGPIOController(bool consoleOut = false) { ConsoleOut = consoleOut; }
-        private (int pinNumber, PinValue value, PinMode mode) FindPin(int pinNumber)
+
+        protected override int PinCount => 32;
+
+        public ConsoleGPIODriver(bool consoleOut = false) { ConsoleOut = consoleOut; }
+        private ConsolePin FindPin(int pinNumber)
         {
-            if (!pins.Any(p => p.pinNumber == pinNumber))
+            if (!pins.Any(p => p.PinNumber == pinNumber))
                 throw new InvalidOperationException($"so sorry, can't do that - pin number {pinNumber} is not open.");
 
-            var match = pins.First(p => p.pinNumber == pinNumber);
+            var match = pins.First(p => p.PinNumber == pinNumber);
             return match;
         }
 
@@ -111,7 +114,7 @@ namespace gRPCpi
                 Console.Write(message);
         }
 
-        public void ClosePin(int pinNumber)
+        protected override void ClosePin(int pinNumber)
         {
             var match = FindPin(pinNumber);
 
@@ -119,23 +122,15 @@ namespace gRPCpi
             WriteLine($"{nameof(ClosePin)}: {pinNumber}");
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             WriteLine(nameof(Dispose));
         }
 
-        public void OpenPin(int pinNumber, PinMode mode)
+        protected override PinValue Read(int pinNumber)
         {
-            if (!pins.Any(p => p.pinNumber == pinNumber))
-            {
-                pins.Add((pinNumber, PinValue.Low, mode));
-                WriteLine($"{nameof(OpenPin)}: {pinNumber}, mode={mode}");
-            }
-        }
-
-        public PinValue Read(int pinNumber)
-        {
-            var val = FindPin(pinNumber).value;
+            var val = FindPin(pinNumber).Value;
             WriteLine($"{nameof(Read)}: {pinNumber}, value={val}");
             return val;
 
@@ -151,18 +146,18 @@ namespace gRPCpi
             }
         }
 
-        public void SetPinMode(int pinNumber, PinMode mode)
+        protected override void SetPinMode(int pinNumber, PinMode mode)
         {
             var match = FindPin(pinNumber);
 
-            match.mode = mode;
+            match.Mode = mode;
             WriteLine($"{nameof(SetPinMode)}: {pinNumber}, mode={mode}");
         }
 
-        public void Write(int pinNumber, PinValue value)
+        protected override void Write(int pinNumber, PinValue value)
         {
             var match = FindPin(pinNumber);
-            match.value = value;
+            match.Value = value;
             WriteLine($"{nameof(Write)}: {pinNumber}, value={value}");
         }
 
@@ -175,5 +170,94 @@ namespace gRPCpi
                 Write(pair.PinNumber, pair.PinValue);
             }
         }
+
+        Dictionary<int, List<PinChangeEventHandler>> PinNone = new Dictionary<int, List<PinChangeEventHandler>>();
+        Dictionary<int, List<PinChangeEventHandler>> PinRising = new Dictionary<int, List<PinChangeEventHandler>>();
+        Dictionary<int, List<PinChangeEventHandler>> PinFalling = new Dictionary<int, List<PinChangeEventHandler>>();
+
+        protected override void AddCallbackForPinValueChangedEvent(int pinNumber, PinEventTypes eventTypes, PinChangeEventHandler callback)
+        {
+            if ((eventTypes | PinEventTypes.None) == PinEventTypes.None)
+            {
+                if (!PinNone.ContainsKey(pinNumber))
+                    PinNone[pinNumber] = new List<PinChangeEventHandler>();
+
+                PinNone[pinNumber].Add(callback);
+            }
+
+            if ((eventTypes | PinEventTypes.Rising) == PinEventTypes.Rising)
+            {
+                if (!PinRising.ContainsKey(pinNumber))
+                    PinRising[pinNumber] = new List<PinChangeEventHandler>();
+
+                PinRising[pinNumber].Add(callback);
+            }
+
+            if ((eventTypes | PinEventTypes.Falling) == PinEventTypes.Falling)
+            {
+                if (!PinFalling.ContainsKey(pinNumber))
+                    PinFalling[pinNumber] = new List<PinChangeEventHandler>();
+
+                PinFalling[pinNumber].Add(callback);
+            }
+        }
+
+        protected override int ConvertPinNumberToLogicalNumberingScheme(int pinNumber)
+        {
+            return pinNumber;
+        }
+
+        protected override PinMode GetPinMode(int pinNumber)
+        {
+            return pins.FirstOrDefault(p => p.PinNumber == pinNumber).Mode ?? throw new Exception($"Pin modenot set for pin {pinNumber}");
+        }
+
+        protected override bool IsPinModeSupported(int pinNumber, PinMode mode)
+        {
+            return true;
+        }
+
+        protected override void OpenPin(int pinNumber)
+        {
+            if (!pins.Any(p => p.PinNumber == pinNumber))
+            {
+                pins.Add(new ConsolePin 
+                { 
+                    PinNumber = pinNumber,
+                    Value = PinValue.Low
+                });
+                WriteLine($"{nameof(OpenPin)}: {pinNumber}");
+            }
+        }
+
+        protected override void RemoveCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback)
+        {
+            if (PinNone.ContainsKey(pinNumber))
+            {
+                PinNone[pinNumber].Remove(callback);
+            }
+
+            if (PinRising.ContainsKey(pinNumber))
+            {
+                PinRising[pinNumber].Remove(callback);
+            }
+
+            if (PinFalling.ContainsKey(pinNumber))
+            {
+                PinFalling[pinNumber].Remove(callback);
+            }
+        }
+
+        protected override WaitForEventResult WaitForEvent(int pinNumber, PinEventTypes eventTypes, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class ConsolePin
+    {
+        public int PinNumber { get; set; }
+        public PinMode? Mode { get; set; }
+        public PinValue Value { get; set; }        
     }
 }

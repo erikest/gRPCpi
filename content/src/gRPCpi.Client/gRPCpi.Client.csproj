@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <!--RuntimeFrameworkVersion>RUNTIME-FRAMEWORK-VERSION</RuntimeFrameworkVersion-->
-    <RuntimeFrameworkVersion>3.0.0-preview3-27503-5</RuntimeFrameworkVersion>
+    <!--RuntimeFrameworkVersion>3.0.0-preview6-27804-01</RuntimeFrameworkVersion-->
     <RuntimeIdentifiers>win-x64;win-x86;linux-arm</RuntimeIdentifiers>
   </PropertyGroup>
 
@@ -15,13 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.Core" Version="1.19.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+    <PackageReference Include="Grpc.Core" Version="2.26.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.11.2" />
 
-    <PackageReference Include="Grpc.Tools" Version="1.19.0" PrivateAssets="All" />
+    <PackageReference Include="Grpc.Tools" Version="2.26.0" PrivateAssets="All" />
 
-    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.6" />
+    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.9" />
 
-    <PackageReference Include="System.Device.Gpio" Version="0.1.0-prerelease.19171.3" />
+    <PackageReference Include="System.Device.Gpio" Version="1.0.0" />
   </ItemGroup>
 </Project>

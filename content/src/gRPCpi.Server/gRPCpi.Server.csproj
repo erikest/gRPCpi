@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,12 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore.Server" Version="0.1.19-pre1" />
-    <PackageReference Include="Google.Protobuf" Version="3.7.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.26.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.11.2" />
 
-    <PackageReference Include="Grpc.Tools" Version="1.19.0" PrivateAssets="All" />
+    <PackageReference Include="Grpc.Tools" Version="2.26.0" PrivateAssets="All" />
 
-    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.6" />
+    <PackageReference Include="libgrpc_csharp_ext.arm7" Version="1.0.9" />
   </ItemGroup>
 
 </Project>

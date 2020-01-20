@@ -26,7 +26,9 @@ namespace gRPCpi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseRouting(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(routes =>
             {
                 routes.MapGrpcService<GreeterService>();
             });
